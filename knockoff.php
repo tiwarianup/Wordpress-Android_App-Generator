@@ -1,4 +1,6 @@
 <?php
+// Place this file in plugins directory of your wordpress installation
+
 /**
  * @package Phonegap Application 
  * @version 1.0
