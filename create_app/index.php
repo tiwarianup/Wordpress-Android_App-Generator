@@ -4,7 +4,7 @@ define('WP_USE_THEMES', true);
 
 /** Loads the WordPress Environment and Template */
 
-require (dirname(dirname(dirname(__FILE__))).'/wp-blog-header.php');
+require (dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/wp-blog-header.php');
 
 if ( !isset($wp_did_header) ) {
     $wp_did_header = true;
@@ -13,10 +13,28 @@ if ( !isset($wp_did_header) ) {
     require_once( ABSPATH . WPINC . '/template-loader.php' );
 }
 
-mkdir(ABSPATH.'/Applications');
+function redirect($url)
+{
+    if (!headers_sent())
+    {
+        header('Location: '.$url);
+        exit;
+    }
+    else
+    {
+        echo '<script type="text/javascript">';
+        echo 'window.location.href="'. $url .'";';
+        echo '</script>';
+        echo '<noscript>';
+        echo '<meta http-equiv="refresh" content="0;url='. $url .'" />';
+        echo '</noscript>'; exit;
+    }
+}
 
-$cwd = ABSPATH . '/Applications';
-chdir($cwd);
+
+if (is_user_logged_in() ) {
+	$cwd = ABSPATH;
+	chdir($cwd);
 
 	$app_name = str_replace( 'http://'.$_SERVER['SERVER_NAME'].'/' , "", site_url() );
 	$command1 = "cordova create ".$app_name;
@@ -26,9 +44,28 @@ chdir($cwd);
 	$command3 = "cordova platform add android";
 	exec($command3);
 
+}else{
+	$url = get_site_url() . '/wp-login.php' ;
+	redirect($url);
+}
 
-$string = '<div><p>Congratulations! Application directory has been created!<br>Now generate HTML pages for your website.</p><br><a href='.get_admin_url().">Back to admin panel</a></div>";
+echo plugins_url();
 
-echo $string;
+/*
+$cwd = ABSPATH;
+chdir($cwd);
+
+	$app_name = str_replace( 'http://'.$_SERVER['SERVER_NAME'].'/' , "", site_url() );
+	$command1 = "cordova create ".$app_name;
+	exec($command1);
+	$command2 = "cd ".$app_name;
+	exec($command2);
+	$command3 = "cordova platform add android";
+	exec($command3);
+*/
+
+// $string = '<div><p>Congratulations! Application directory has been created!<br>Now generate HTML pages for your website.</p><br><a href='.get_admin_url().">Back to admin panel</a></div>";
+
+// echo $string;
 
 ?>

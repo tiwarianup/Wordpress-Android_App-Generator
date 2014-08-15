@@ -2,7 +2,7 @@
 
 define('WP_USE_THEMES', true);
 /** Loads the WordPress Environment and Template */
-require (dirname(dirname(dirname(__FILE__))).'/wp-blog-header.php');
+require (dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/wp-blog-header.php');
 
 if ( !isset($wp_did_header) ) 
 {
@@ -11,8 +11,6 @@ if ( !isset($wp_did_header) )
     wp();
     require_once( ABSPATH . WPINC . '/template-loader.php' );
 }
-
-$app_name = str_replace( 'http://' . $_SERVER['SERVER_NAME'] . '/' , "", site_url()) ;
 
 function redirect($url)
 {
@@ -24,17 +22,54 @@ function redirect($url)
     else
     {
         echo '<script type="text/javascript">';
-        echo 'window.location.href="'.$url.'";';
+        echo 'window.location.href="'. $url .'";';
         echo '</script>';
         echo '<noscript>';
-        echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+        echo '<meta http-equiv="refresh" content="0;url='. $url .'" />';
         echo '</noscript>'; exit;
     }
 }
 
-// header( 'Location: ABSPATH . "/Applications/". $app_name . "platforms/android/ant-build/HelloWorld-debug.apk" ');
+if (is_user_logged_in()) {
+    $cwd = ABSPATH;
+    chdir($cwd);
+    echo getcwd().'<br>';
 
-$url = get_site_url() . "/Applications/". $app_name . "/platforms/android/ant-build/HelloWorld-debug.apk";
-redirect($url);
+        $app_name = str_replace( 'http://'.$_SERVER['SERVER_NAME'].'/' , "", site_url() );
+        try 
+        {
+            $command2 = "cd ".$app_name;
+            exec($command2);
+            $command3 = "cordova platform add android";
+            exec($command3);
+            $command4 = "cordova build ";
+            exec($command4); 
+        } 
+        catch (Exception $e) 
+        {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
+
+        ######################################################
+        ##  ----------------------------------------------  ##
+        ##    $command2 = "cd ".$app_name;                  ##
+        ##    exec($command2);                              ##
+        ##    $command3 = "cordova platform add android";   ##
+        ##    exec($command3);                              ##
+        ##    $command4 = "cordova build";                  ##
+        ##    exec($command4);                              ##
+        ##  ----------------------------------------------  ##
+        ######################################################
+
+    $app_name = str_replace( 'http://' . $_SERVER['SERVER_NAME'] . '/' , "", site_url()) ;
+    $url = get_site_url() . '/' . $app_name . "/platforms/android/ant-build/HelloCordova-debug.apk";
+    redirect($url);
+
+} else 
+{
+    $url = get_site_url() . '/wp-login.php' ;
+    redirect($url);
+}
+
 
 //EOF
