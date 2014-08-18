@@ -1,4 +1,5 @@
 <?php
+ini_set("max_execution_time", 0);
 
 define('WP_USE_THEMES', true);
 
@@ -32,24 +33,26 @@ function redirect($url)
 }
 
 
-if (is_user_logged_in() ) {
+if ( is_user_logged_in() ) 
+{
 	$cwd = ABSPATH;
-	chdir($cwd);
-
+	chdir( $cwd );
+	$admin_url = admin_url() . 'admin.php?page=plugin_settings';
 	$app_name = str_replace( 'http://'.$_SERVER['SERVER_NAME'].'/' , "", site_url() );
 	$command1 = "cordova create ".$app_name;
-	exec($command1);
+	exec( $command1 );
 	$command2 = "cd ".$app_name;
-	exec($command2);
+	exec( $command2 );
 	$command3 = "cordova platform add android";
-	exec($command3);
+	exec( $command3 );
+	echo "<p style='font-size:20px;''>Application directory created.<br><a href='$admin_url'>Go back to admin panel!</a></p>";
 
-}else{
+}else
+{
 	$url = get_site_url() . '/wp-login.php' ;
 	redirect($url);
 }
 
-echo plugins_url();
 
 /*
 $cwd = ABSPATH;

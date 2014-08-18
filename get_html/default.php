@@ -14,6 +14,8 @@ if ( !isset($wp_did_header) )
 
 if (is_user_logged_in() ) {
 	# code...
+	$admin_url = admin_url() . 'admin.php?page=plugin_settings';
+	echo "<p style='font-size:20px;''>HTML Pages generated in the application directory.<br><a href='$admin_url'>Go back to admin panel!</a></p>";
 
 	// include simple_html_dom parser
 	include( 'simple_html_dom.php' );
@@ -95,7 +97,7 @@ if (is_user_logged_in() ) {
 		}
 	}
 
-	function modify_pages( $pages, $links, $scripts, $images )
+	function phonegap_generator_modify_pages( $pages, $links, $scripts, $images )
 	{
 		$directory = getcwd();
 		$new_css_file_name = array(); 
@@ -154,7 +156,6 @@ if (is_user_logged_in() ) {
 		foreach ( $pages as $page )
 		{
 			$temp_page_link = get_page_link( $page->ID );
-			echo $temp_page_link.'<br>';
 			$html      = file_get_html( $temp_page_link );
 			$a_home    = $html->find('a[rel=home]');
 			$page_link = rtrim( $temp_page_link, "/" );
@@ -197,7 +198,7 @@ if (is_user_logged_in() ) {
 		}
 	}
 
-	modify_pages( $pages, $links, $scripts, $images);
+	phonegap_generator_modify_pages( $pages, $links, $scripts, $images);
 
 } else 
 {
